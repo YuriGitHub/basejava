@@ -1,61 +1,52 @@
+import java.util.Arrays;
+
 /**
  * Array based storage for Resumes
  */
 public class ArrayStorage {
+
     Resume[] storage = new Resume[10000];
+    int size = 0;
 
     void clear() {
-        this.storage = new Resume[10000];
+        Arrays.fill(storage, null);
+        size = 0;
     }
 
-    void save(Resume r) {
-        int length = this.size();
-        storage[length] = r;
+    void save(Resume resume) {
+        int length = size();
+        storage[length] = resume;
+        size++;
     }
 
     Resume get(String uuid) {
-        for (Resume resume : this.storage){
-            if(resume.uuid.equals(uuid))
+        for (Resume resume : storage){
+            if(resume.uuid.equals(uuid)) {
                 return resume;
+            }
         }
         return null;
     }
 
     void delete(String uuid) {
-        int indexForDelete = -1;
-        for (int i = 0; i < storage.length; i++){
+        for (int i = 0; i < size(); i++) {
             if(storage[i].uuid.equals(uuid)){
-                indexForDelete = i;
+                storage[i] = storage[size() - 1];
+                storage[size() - 1] = null;
+                size --;
                 break;
             }
         }
-        if(indexForDelete != -1){
-            int lastIndex = size() - 1;
-            if(lastIndex >= 0){
-                Resume lastResume = storage[lastIndex];
-                storage[indexForDelete] = lastResume;
-                storage[lastIndex] = null;
-            }
-        }
-
     }
 
     /**
      * @return array, contains only Resumes in storage (without null)
      */
     Resume[] getAll() {
-        Resume[] res = new Resume[size()];
-        System.arraycopy(storage, 0, res, 0, size());
-        return res;
+        return Arrays.copyOf(storage, size());
     }
 
     int size() {
-        int length = 0;
-        for (Resume aStorage : this.storage) {
-            if (aStorage == null)
-                break;
-            length++;
-        }
-        return length;
+       return size;
     }
 }
